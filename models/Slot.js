@@ -6,8 +6,8 @@ const slotSchema = new Schema({
   address: String,
   lat: Number,
   lon: Number,
-  session: [{ type: ObjectId, ref: "Session" }],
-  owner: { type: ObjectId, ref: "User" },
+  session: [{ type: Schema.Types.ObjectId, ref: "Session" }],
+  owner: { type: Schema.Types.ObjectId, ref: "User" },
 }); 
 
 mongoose.model("Slot", slotSchema);

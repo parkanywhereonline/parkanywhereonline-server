@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www"
+    "dev": "set NODE_ENV=development && nodemon ./bin/www"
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -15,9 +15,11 @@
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "mongoose": "^5.11.19",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "dotenv": "^8.2.0",
     "nodemon": "^2.0.7"
   }
 }
