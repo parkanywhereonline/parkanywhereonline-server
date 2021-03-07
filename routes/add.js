@@ -1,36 +1,42 @@
 const mongoose = require("mongoose");
 var express = require('express');
+const md5 = require("md5");
 const router = express.Router();
 
 const User = mongoose.model("User");
-const Slot = mongoose.model("Slot");
+const Spot = mongoose.model("Spot");
 const Session = mongoose.model("Session");
 
-router.post('/slot', function(req, res) {
-  const { name, address, owner } = req.body;
+router.post('/spot', function(req, res) {
+  const { name, address, owner, lat, lon } = req.body;
 
-  const newSlot = new Slot({
+  const newSpot = new Spot({
     name: name,
     address: address,
-    lat: 0.0,
-    lon: 0.0,
-    session: [],
+    lat: lat,
+    lon: lon,
+    sessions: [],
     owner: new mongoose.Types.ObjectId(owner),
   });
 
-  newSlot.save().then(slot => {
-    res.json(slot);
+  newSpot.save().then(spot => {
+    User.findByIdAndUpdate(owner, {
+      $push: { spots: spot._id }
+    }, _ => {});
+
+    res.json(spot);
   }).catch(err => console.log(err));
 });
 
 router.post('/user', function(req, res) {
-  const { email, fname, lname } = req.body;
+  const { email, fname, lname, password } = req.body;
 
   const newUser = new User({
     email: email,
     fname: fname,
     lname: lname,
-    slots: [],
+    password: md5(password),
+    spots: [],
     sessions: [],
   });
 
@@ -40,15 +46,24 @@ router.post('/user', function(req, res) {
 });
 
 router.post('/session', function(req, res) {
-  const { start, end, user } = req.body;
+  const { start, end, user, spot } = req.body;
 
   const newSession = new Session({
     start: start,
     end: end,
     booked_by: new mongoose.Types.ObjectId(user),
+    spot: new mongoose.Types.ObjectId(spot),
   });
 
   newSession.save().then(session => {
+    User.findByIdAndUpdate(user, {
+      $push: { sessions: session._id }
+    }, _ => {});
+
+    Spot.findByIdAndUpdate(spot, {
+      $push: { sessions: session._id }
+    }, _ => {});
+
     res.json(session);
   }).catch(err => console.log(err));
 });

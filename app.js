@@ -14,7 +14,7 @@ mongoose.connect(mongoUri, {useNewUrlParser: true, useUnifiedTopology: true});
 
 // schemas
 require("./models/Session")
-require("./models/Slot")
+require("./models/Spot")
 require("./models/User")
 
 var indexRouter = require('./routes/index');
